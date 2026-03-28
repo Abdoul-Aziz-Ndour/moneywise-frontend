@@ -16,6 +16,12 @@ export default function Layout() {
   const [open, setOpen] = useState(false);
   const handleLogout = () => { logout(); navigate('/login'); };
 
+  // ✅ Récupérer les infos utilisateur peu importe la structure
+  const userData = user?.user || user || {}
+  const displayName = userData?.first_name || userData?.username || 'Utilisateur'
+  const displayEmail = userData?.email || ''
+  const displayInitiale = displayName?.[0]?.toUpperCase() || '?'
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
       {open && (
@@ -68,14 +74,16 @@ export default function Layout() {
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 bg-emerald-100 rounded-full flex items-center justify-center">
               <span className="text-emerald-700 font-bold text-sm">
-                {user?.user?.first_name?.[0] || user?.user?.username?.[0] || '?'}
+                {/* ✅ Afficher la bonne initiale */}
+                {displayInitiale}
               </span>
             </div>
             <div>
               <p className="text-sm font-semibold text-gray-900">
-                {user?.user?.first_name || user?.user?.username}
+                {/* ✅ Afficher le bon nom */}
+                {displayName}
               </p>
-              <p className="text-xs text-gray-500">{user?.user?.email}</p>
+              <p className="text-xs text-gray-500">{displayEmail}</p>
             </div>
           </div>
           <button

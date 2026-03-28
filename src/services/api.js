@@ -1,10 +1,14 @@
+// src/services/api.js
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api',
+  baseURL: 'http://localhost:8000/api', // ou ton URL backend
+  headers: {
+    'Content-Type': 'application/json',
+  },
 })
 
-// Ajoute le token automatiquement
+// Intercepteur pour ajouter le token
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {
@@ -13,14 +17,15 @@ API.interceptors.request.use((config) => {
   return config
 })
 
-// Services Auth
-export const authService = {
-  login: (data) => API.post('/auth/login/', data),
-  register: (data) => API.post('/auth/register/', data),
-  logout: () => API.post('/auth/logout/'),
-}
+// Intercepteur pour gérer les erreurs
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('❌ API Error:', error.response?.status, error.response?.data)
+    return Promise.reject(error)
+  }
+)
 
-// Services Transactions
 export const transactionService = {
   getAll: () => API.get('/transactions/'),
   create: (data) => API.post('/transactions/', data),
@@ -28,10 +33,11 @@ export const transactionService = {
   delete: (id) => API.delete(`/transactions/${id}/`),
 }
 
-// Services Categories
-export const categorieService = {
-  getAll: () => API.get('/categories/'),
-  create: (data) => API.post('/categories/', data),
+export const authService = {
+  login: (data) => API.post('/auth/login/', data),
+  register: (data) => API.post('/auth/register/', data),
+  logout: () => API.post('/auth/logout/'),
+  getProfile: () => API.get('/auth/profile/'),
 }
 
 export default API

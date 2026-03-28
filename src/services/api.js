@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: 'http://localhost:8000/api', // ou ton URL backend
+  baseURL: 'https://abdoulaziz.pythonanywhere.com/api', // ✅ URL production
   headers: {
     'Content-Type': 'application/json',
   },
